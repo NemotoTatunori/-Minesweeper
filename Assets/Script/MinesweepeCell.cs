@@ -26,7 +26,7 @@ public enum Status
     NoneOpen = 3,
 }
 
-public class Cell : MonoBehaviour
+public class MinesweepeCell : MonoBehaviour
 {
     [SerializeField] private Text m_view = null;
     [SerializeField] private CellState m_cellState = CellState.None;
@@ -46,7 +46,6 @@ public class Cell : MonoBehaviour
         {
             m_cellState = value;
             OnCellStateChanged();
-
         }
     }
 

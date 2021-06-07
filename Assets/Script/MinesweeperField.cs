@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class MinesweeperField : MonoBehaviour
 {
-    [SerializeField] Cell m_cellPrefab;//セルのプレハブ
+    [SerializeField] MinesweepeCell m_cellPrefab;//セルのプレハブ
     [SerializeField] GridLayoutGroup m_container = null;
     [SerializeField] int m_row = 3;
     [SerializeField] int m_col = 3;
@@ -13,7 +13,7 @@ public class MinesweeperField : MonoBehaviour
     int m_flag = 0;//旗の経っている数
     int m_bombFlag = 0;//爆弾セルに旗が乗っている数
     int m_bombOtherThan;//爆弾以外のセルが展開された数
-    private Cell[,] _cells;
+    private MinesweepeCell[,] _cells;
     void Start()
     {
         if (m_col < m_row)
@@ -26,7 +26,7 @@ public class MinesweeperField : MonoBehaviour
             m_container.constraint = GridLayoutGroup.Constraint.FixedRowCount;
             m_container.constraintCount = m_col;
         }
-        _cells = new Cell[m_row, m_col];
+        _cells = new MinesweepeCell[m_row, m_col];
 
         //セルを生成
         for (int col = 0; col < _cells.GetLength(1); col++)
@@ -44,21 +44,20 @@ public class MinesweeperField : MonoBehaviour
         //爆弾を付与
         for (var i = 0; i < m_bomb; i++)
         {
-            if (m_row * m_col == i)
+            if (m_row * m_col == i)//もし爆弾数がマス数に達したら爆弾付与をやめる
             {
                 break;
             }
-            var r = Random.Range(0, m_row);
-            var c = Random.Range(0, m_col);
+            var r = Random.Range(0, m_row);//横の抽選
+            var c = Random.Range(0, m_col);//縦の抽選
             var cells = _cells[r, c];
-            if (cells.CellState != CellState.Mine)
+            if (cells.CellState != CellState.Mine)//もし選ばれたセルが爆弾持ちでなかったら
             {
-                cells.CellState = CellState.Mine;
-
+                cells.CellState = CellState.Mine;//爆弾を付与
             }
             else
             {
-                i--;
+                i--;//そうでなかったら抽選をやり直す
             }
         }
 
