@@ -258,7 +258,9 @@ MonoBehaviour:
   m_container: {fileID: 1236369064}
   m_row: 5
   m_col: 5
-  m_bomb: 20
+  m_bomb: 5
+  m_text: {fileID: 0}
+  m_panel: {fileID: 0}
 --- !u!114 &1236369064
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ public enum State
 {
     Close = 0,
     Open = 1,
+    StateOpen = 2,
 }
 
 public class ReversiPiece : MonoBehaviour
@@ -24,6 +25,7 @@ public class ReversiPiece : MonoBehaviour
     public int m_row;
     public int m_col;
     [SerializeField] Image m_image = null;
+    private GameObject reversi;
 
     public PieceState PieceState
     {
@@ -43,7 +45,14 @@ public class ReversiPiece : MonoBehaviour
             OnPiecePutChanged();
         }
     }
-    
+
+    private void OnValidate()
+    {
+        OnPieceColorChanged();
+        OnPiecePutChanged();
+    }
+
+
     private void OnPieceColorChanged()
     {
         m_image = transform.Find("Piece").gameObject.GetComponent<Image>();
@@ -60,36 +69,58 @@ public class ReversiPiece : MonoBehaviour
     {
         if (m_state == State.Close)
         {
-            
+
         }
         else if (m_state == State.Open)
         {
-            Open();
+            m_piece.gameObject.SetActive(true);
+        }
+        else if (m_state == State.StateOpen)
+        {
+            StateOpen();
         }
     }
 
+    /// <summary>
+    /// 座標を受け取る
+    /// </summary>
+    /// <param name="r">横座標</param>
+    /// <param name="c">縦座標</param>
     public void GetCoordinate(int r, int c)
     {
         m_row = r;
         m_col = c;
     }
 
+    /// <summary>
+    /// マスを展開する
+    /// </summary>
     public void Open()
     {
-        m_piece.gameObject.SetActive(true);
-        ReversiField field = FindObjectOfType<ReversiField>();
-        if (field)
+        if (this.m_state == State.Close)
         {
-            field.PieceFindOut(m_row, m_col);
+            ReversiField field = FindObjectOfType<ReversiField>();
+            field.PieceChangeAll(m_row, m_col);
+            //reversi.GetComponent<ReversiField>().PieceChangeAll(m_row, m_col);
+        }
+        else
+        {
+            Debug.Log("ここには置けない");
         }
     }
-    
+
+    public void StateOpen()
+    {
+        this.m_state = State.Open;
+        m_piece.gameObject.SetActive(true);
+    }
+
     void Start()
     {
-        
+
     }
     void Update()
     {
-        
+
     }
 }

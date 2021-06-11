@@ -122,7 +122,7 @@ MonoBehaviour:
   m_state: 0
   m_row: 0
   m_col: 0
-  m_image: {fileID: 0}
+  m_image: {fileID: 2172924790477517354}
 --- !u!1 &4874620374094820759
 GameObject:
   m_ObjectHideFlags: 0

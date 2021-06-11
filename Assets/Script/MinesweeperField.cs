@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MinesweeperField : MonoBehaviour
 {
@@ -12,8 +13,10 @@ public class MinesweeperField : MonoBehaviour
     [SerializeField] int m_bomb = 5;
     int m_flag = 0;//旗の経っている数
     int m_bombFlag = 0;//爆弾セルに旗が乗っている数
-    int m_bombOtherThan;//爆弾以外のセルが展開された数
+
     private MinesweepeCell[,] _cells;
+    [SerializeField] Text m_text = null;
+    [SerializeField] GameObject m_panel = null;
     void Start()
     {
         if (m_col < m_row)
@@ -220,13 +223,24 @@ public class MinesweeperField : MonoBehaviour
         m_bombFlag += f;
         if (m_bombFlag == m_bomb)
         {
-            GameClear();            
+            GameClear();
         }
     }
-    public void BombOtherThan(int f)
+    /// <summary>
+    /// 爆弾以外のセルが展開された数を数え、爆弾以外全て展開されたらクリアにする。
+    /// </summary>
+    public void BombOtherThan()
     {
-        m_bombOtherThan += f;
-        if (m_row * m_col - m_bombOtherThan == m_bomb)
+        int bombOtherThan = 0;//爆弾以外のセルが展開された数
+        foreach (var i in _cells)
+        {
+            if (i.Status == Status.Open)
+            {
+                bombOtherThan++;
+            }
+            
+        }
+        if (m_row * m_col - bombOtherThan == m_bomb)
         {
             GameClear();
         }
@@ -249,12 +263,28 @@ public class MinesweeperField : MonoBehaviour
 
     public void GameClear()
     {
+        m_text.text = "ゲームクリア";
         Debug.Log("ゲームクリア");
+        foreach (var i in _cells)
+        {
+            i.GetComponent<MinesweepeCell>().GameEnd();
+            m_panel.SetActive(true);
+        }
     }
 
     public void GameOver()
     {
-        Debug.Log("ゲームオーバー");
+        m_text.text = "ゲームオーバー";
+        foreach (var i in _cells)
+        {
+            i.GetComponent<MinesweepeCell>().GameEnd();
+            m_panel.SetActive(true);
+        }
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void AddMine(int r, int c)

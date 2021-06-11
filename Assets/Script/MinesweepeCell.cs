@@ -134,11 +134,12 @@ public class MinesweepeCell : MonoBehaviour
         if (this.m_status != Status.Flag)
         {
             m_button.gameObject.SetActive(false);
+            this.m_status = Status.Open;
             Debug.Log(row + " " + col + "が開いた");
             if (this.m_cellState == CellState.Mine)
             {
                 m_image.color = Color.red;
-                Debug.Log("ゲームオーバー");
+                mine.GetComponent<MinesweeperField>().GameOver();
             }
             else
             {
@@ -146,7 +147,7 @@ public class MinesweepeCell : MonoBehaviour
                 if (field)
                 {
                     field.CellCoordinate(row, col);
-                    field.BombOtherThan(1);
+                    field.BombOtherThan();
                 }
             }
         }
@@ -165,7 +166,6 @@ public class MinesweepeCell : MonoBehaviour
             if (this.m_cellState == CellState.None)
             {
                 field.CellOpen(row, col);
-                field.BombOtherThan(1);
             }
         }
     }
@@ -216,5 +216,10 @@ public class MinesweepeCell : MonoBehaviour
             }
         }
     }
+    public void GameEnd()
+    {
+        m_button.gameObject.SetActive(false);
+    }
+
 }
 
