@@ -11,10 +11,12 @@ public class ReversiField : MonoBehaviour
     [SerializeField] int m_col = 8;//縦の長さ
     [SerializeField] Text m_WhiteCount = null;
     [SerializeField] Text m_BlackCount = null;
+    [SerializeField] Text m_order = null;
     private ReversiPiece[,] m_piece;//ステージの配列
     bool m_turn = true;
-    int m_white = 0;
-    int m_black = 0;
+    [SerializeField] GameObject m_lizard = null;
+    [SerializeField] Text m_lizardJudgment = null;
+
     void Start()
     {
         if (m_col < m_row)
@@ -55,6 +57,7 @@ public class ReversiField : MonoBehaviour
         }
         Aggregate();
         SearchAll();
+        m_order.text = "白の番";
     }
 
     /// <summary>
@@ -69,18 +72,20 @@ public class ReversiField : MonoBehaviour
             m_piece[r, c].State = State.Open;
             m_piece[r, c].PieceState = PieceState.White;
             m_turn = false;
+            m_order.text = "黒の番";
         }
         else
         {
             m_piece[r, c].State = State.Open;
             m_piece[r, c].PieceState = PieceState.Black;
             m_turn = true;
+            m_order.text = "白の番";
         }
         SearchAll();
     }
 
     /// <summary>
-    /// 置ける場所を探す
+    /// 置ける場所を探す全てのパターン
     /// </summary>
     public void SearchAll()
     {
@@ -122,7 +127,14 @@ public class ReversiField : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// 置ける場所を探す
+    /// </summary>
+    /// <param name="r"></param>
+    /// <param name="c"></param>
+    /// <param name="moveR"></param>
+    /// <param name="moveC"></param>
+    /// <returns></returns>
     public int Search(int r, int c, int moveR, int moveC)
     {
         int row = r + moveR;
@@ -290,29 +302,48 @@ public class ReversiField : MonoBehaviour
         }
         return 0;
     }
-
+    /// <summary>
+    /// 石の数を更新し、必要があればゲームを終了させる。
+    /// </summary>
     void Aggregate()
     {
-        m_white = 0;
-        m_black = 0;
+        int white = 0;
+        int black = 0;
+        int none = 0;
         foreach (var i in m_piece)
         {
             if (i.PieceState == PieceState.Black)
             {
-                m_black++;
+                black++;
             }
             else if (i.PieceState == PieceState.White)
             {
-                m_white++;
+                white++;
+            }
+            else
+            {
+                none++;
             }
         }
-        m_WhiteCount.text = "白：" + m_white;
-        m_BlackCount.text = "黒：" + m_black;
+        m_WhiteCount.text = "白：" + white;
+        m_BlackCount.text = "黒：" + black;
+        if (none == 0 || white == 0 || black == 0)
+        {
+            GameSet(white, black);
+        }
     }
 
-    void GameSet()
+    void GameSet(int white, int black)
     {
-
+        m_lizard.SetActive(true);
+        if (white > black)
+        {
+            m_lizardJudgment.text = "白の勝ち！";
+        }
+        else
+        {
+            m_lizardJudgment.text = "黒の勝ち！";
+        }
     }
 
     void Update()
