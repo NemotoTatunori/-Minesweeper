@@ -16,6 +16,7 @@ public class ReversiField : MonoBehaviour
     bool m_turn = true;
     [SerializeField] GameObject m_lizard = null;
     [SerializeField] Text m_lizardJudgment = null;
+    bool m_cheat = true;
 
     void Start()
     {
@@ -348,6 +349,58 @@ public class ReversiField : MonoBehaviour
 
     void Update()
     {
+        if (m_cheat == true)
+        {
+            if (Input.GetKey("w") && Input.GetMouseButtonDown(1))
+            {
+                StartCoroutine("WhiteCheat");
+                m_cheat = false;
+            }
+            if (Input.GetKey("b") && Input.GetMouseButtonDown(1))
+            {
+                StartCoroutine("BlackCheat");
+                m_cheat = false;
+            }
+        }
+    }
 
+    IEnumerator BlackCheat()
+    {
+        PieceChangeAll(5, 3);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(5, 2);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(4, 2);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(5, 4);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(4, 5);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(3, 6);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(3, 5);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(3, 2);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(2, 4);
+    }
+
+    IEnumerator WhiteCheat()
+    {
+        PieceChangeAll(5, 3);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(3, 2);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(2, 3);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(5, 4);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(4, 1);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(5, 2);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(6, 3);
+        yield return new WaitForSeconds(0.5f);
+        PieceChangeAll(4, 2);
     }
 }

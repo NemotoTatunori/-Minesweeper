@@ -101,7 +101,6 @@ public class ReversiPiece : MonoBehaviour
         {
             ReversiField field = FindObjectOfType<ReversiField>();
             field.PieceChangeAll(m_row, m_col);
-            //reversi.GetComponent<ReversiField>().PieceChangeAll(m_row, m_col);
         }
         else
         {
