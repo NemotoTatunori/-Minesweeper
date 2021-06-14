@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ReversiField : MonoBehaviour
 {
@@ -402,5 +403,14 @@ public class ReversiField : MonoBehaviour
         PieceChangeAll(6, 3);
         yield return new WaitForSeconds(0.5f);
         PieceChangeAll(4, 2);
+    }
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void Title()
+    {
+        SceneManager.LoadScene("TitleScreen");
     }
 }

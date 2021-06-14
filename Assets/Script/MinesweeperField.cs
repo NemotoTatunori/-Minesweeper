@@ -17,6 +17,8 @@ public class MinesweeperField : MonoBehaviour
     private MinesweepeCell[,] _cells;
     [SerializeField] Text m_text = null;
     [SerializeField] GameObject m_panel = null;
+
+    [SerializeField] GameObject m_Difficulty = null;
     void Start()
     {
         if (m_col < m_row)
@@ -264,7 +266,6 @@ public class MinesweeperField : MonoBehaviour
     public void GameClear()
     {
         m_text.text = "ゲームクリア";
-        Debug.Log("ゲームクリア");
         foreach (var i in _cells)
         {
             i.GetComponent<MinesweepeCell>().GameEnd();
@@ -285,6 +286,11 @@ public class MinesweeperField : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void Title()
+    {
+        SceneManager.LoadScene("TitleScreen");
     }
 
     private void AddMine(int r, int c)
@@ -333,6 +339,33 @@ public class MinesweeperField : MonoBehaviour
             if (right < m_col && _cells[bottom, right].CellState == CellState.Mine) { count++; }
         }
         return count;
+    }
+
+    public void Easy()
+    {
+        m_row = 5;
+        m_col = 5;
+        m_bomb = 5;
+        Start();
+        m_Difficulty.SetActive(false);
+    }
+
+    public void Normal()
+    {
+        m_row = 7;
+        m_col = 7;
+        m_bomb = 10;
+        Start();
+        m_Difficulty.SetActive(false);
+    }
+
+    public void Hard()
+    {
+        m_row = 10;
+        m_col = 10;
+        m_bomb = 20;
+        Start();
+        m_Difficulty.SetActive(false);
     }
     void Update()
     {

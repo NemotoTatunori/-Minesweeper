@@ -33,9 +33,9 @@ public class MinesweepeCell : MonoBehaviour
     [SerializeField] Button m_button = null;
     public int row;
     public int col;
-    [SerializeField] private Text m_hata = null;
     [SerializeField] private Status m_status = Status.Close;
     [SerializeField] Image m_image = null;
+    [SerializeField] GameObject m_flag = null;
 
     private GameObject mine;
 
@@ -101,11 +101,11 @@ public class MinesweepeCell : MonoBehaviour
     {
         if (m_status == Status.Close)
         {
-            m_hata.text = "";
+            m_flag.SetActive(false);
         }
         else if (m_status == Status.Flag)
         {
-            m_hata.text = "旗";
+            m_flag.SetActive(true);
         }
         else if (m_status == Status.Open)
         {
@@ -182,7 +182,7 @@ public class MinesweepeCell : MonoBehaviour
                 bool f = mine.GetComponent<MinesweeperField>().Fl();
                 if (f == true)
                 {
-                    m_hata.text = "旗";
+                    m_flag.SetActive(true);
                     this.m_status = Status.Flag;
                     MinesweeperField field = FindObjectOfType<MinesweeperField>();
                     if (field)
@@ -202,7 +202,7 @@ public class MinesweepeCell : MonoBehaviour
             }
             else
             {
-                m_hata.text = "";
+                m_flag.SetActive(false);
                 this.m_status = Status.Close;
                 MinesweeperField field = FindObjectOfType<MinesweeperField>();
                 if (field)
@@ -222,4 +222,3 @@ public class MinesweepeCell : MonoBehaviour
     }
 
 }
-
