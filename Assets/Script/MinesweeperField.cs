@@ -17,7 +17,6 @@ public class MinesweeperField : MonoBehaviour
     private MinesweepeCell[,] _cells;
     [SerializeField] Text m_text = null;
     [SerializeField] GameObject m_panel = null;
-
     [SerializeField] GameObject m_Difficulty = null;
     void Start()
     {

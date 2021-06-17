@@ -3,29 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum PieceState
-{
-    None = 0,
-    Black = 1,
-    White = 2,
-}
-
-public enum State
-{
-    Close = 0,
-    Open = 1,
-    StateOpen = 2,
-}
-
-public class ReversiPiece : MonoBehaviour
+public class MineReversiCell : MonoBehaviour
 {
     [SerializeField] GameObject m_piece = null;
-    [SerializeField] PieceState m_pieceState = PieceState.Black;
+    [SerializeField] private Text m_view = null;
+    [SerializeField] private CellState m_cellState = CellState.None;
     [SerializeField] State m_state = State.Close;
+    [SerializeField] private PieceState m_pieceState = PieceState.Black;
+    [SerializeField] GameObject m_button = null;
     public int m_row;
     public int m_col;
     [SerializeField] Image m_image = null;
-    private GameObject reversi;
+
+    private GameObject mine;
 
     public PieceState PieceState
     {
@@ -46,16 +36,48 @@ public class ReversiPiece : MonoBehaviour
         }
     }
 
+    public CellState CellState
+    {
+        get => m_cellState;
+        set
+        {
+            m_cellState = value;
+            OnCellStateChanged();
+        }
+    }
+
     private void OnValidate()
     {
         OnPieceColorChanged();
         OnPiecePutChanged();
+        OnCellStateChanged();
     }
 
+    private void OnCellStateChanged()
+    {
+        if (m_view == null)
+        {
+            return;
+        }
+        if (m_cellState == CellState.None)
+        {
+            m_view.text = "";
+        }
+        else if (m_cellState == CellState.Mine)
+        {
+            m_view.text = "X";
+            m_view.color = Color.red;
+        }
+        else
+        {
+            m_view.text = ((int)m_cellState).ToString();
+            m_view.color = Color.blue;
+        }
+    }
 
     private void OnPieceColorChanged()
     {
-        //m_image = transform.Find("Piece").gameObject.GetComponent<Image>();
+        m_image = transform.Find("Piece").gameObject.GetComponent<Image>();
         if (m_pieceState == PieceState.Black)
         {
             m_image.color = Color.black;
@@ -74,6 +96,7 @@ public class ReversiPiece : MonoBehaviour
         else if (m_state == State.Open)
         {
             m_piece.gameObject.SetActive(true);
+            m_button.gameObject.SetActive(false);
         }
         else if (m_state == State.StateOpen)
         {
@@ -99,7 +122,8 @@ public class ReversiPiece : MonoBehaviour
     {
         if (this.m_state == State.Close)
         {
-            ReversiField field = FindObjectOfType<ReversiField>();
+            MineReversiField field = FindObjectOfType<MineReversiField>();
+            field.CellCoordinate(m_row, m_col);
             field.PieceChangeAll(m_row, m_col);
         }
         else
@@ -112,6 +136,7 @@ public class ReversiPiece : MonoBehaviour
     {
         this.m_state = State.Open;
         m_piece.gameObject.SetActive(true);
+        m_button.gameObject.SetActive(false);
     }
 
     void Start()
