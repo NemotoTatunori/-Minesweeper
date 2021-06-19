@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Minesweeper.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/LifeGame.unity
+    guid: 99565794f4ad06444b1126fe93e0e3e5
+  - enabled: 1
+    path: Assets/Scenes/Bingo.unity
+    guid: 3ae929772c4214642bd34330e77d1da3
   m_configObjects: {}

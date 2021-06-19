@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 
@@ -116,12 +117,46 @@ public class LifeGameField : MonoBehaviour
         }
     }
 
-
+    public void Title()
+    {
+        SceneManager.LoadScene("TitleScreen");
+    }
+    float a = 0;
     void Update()
     {
+
+        if (Input.GetMouseButton(0))
+        {
+
+            a += Time.deltaTime;
+            if (a > 0.1)
+            {
+                a = 0;
+                SearchAll();
+            }
+        }
         if (Input.GetMouseButtonDown(1))
         {
             SearchAll();
+        }
+    }
+
+    public void Restart()
+    {
+        foreach (var item in m_cell)
+        {
+            if (m_probability != 0)
+            {
+                int random = Random.Range(0, 101);
+                if (random <= m_probability)
+                {
+                    item.LifeState = LifeState.Life;
+                }
+                else
+                {
+                    item.LifeState = LifeState.Death;
+                }
+            }
         }
     }
 }

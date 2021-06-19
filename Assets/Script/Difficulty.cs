@@ -16,4 +16,19 @@ public class Difficulty : MonoBehaviour
     {
         SceneManager.LoadScene("Reversi");
     }
+
+    public void LifeGame()
+    {
+        SceneManager.LoadScene("LifeGame");
+    }
+
+    public void Bingo()
+    {
+        SceneManager.LoadScene("Bingo");
+    }
+
+    public void Exit()
+    {
+        Application.Quit();
+    }
 }
