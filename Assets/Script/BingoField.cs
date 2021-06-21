@@ -7,25 +7,26 @@ using UnityEngine.SceneManagement;
 public class BingoField : MonoBehaviour
 {
     [SerializeField] BingoCell m_cellPrefab;//セルのプレハブ
+    [SerializeField] BingoBoardNum m_BoardCellPrefab;//番号板のプレハブ
     [SerializeField] GridLayoutGroup m_container = null;
+    [SerializeField] GridLayoutGroup m_board = null;
     [SerializeField] int m_row = 5;//横の長さ
     [SerializeField] int m_col = 5;//縦の長さ
-    int[,] m_AllNum = new int[4, 15];
-    int[] m_B = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
-    int[] m_I = { 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 };
-    int[] m_N = { 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60 };
-    int[] m_G = { 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80 };
-    int[] m_O = { 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100 };
-    BingoCell[,] m_bingoCell;
-
+    [SerializeField] int m_boardRow = 15;//横の長さ
+    [SerializeField] int m_boardCol = 5;//縦の長さ
+    [SerializeField] Text m_result = null;
+    int[,] m_AllNum;//全数字の配列
+    BingoCell[,] m_bingoCell;//セルの配列
+    BingoBoardNum[,] m_bingoBoardNums;//番号板の配列
+    int m_turn = 0;
 
     void Start()
     {
         m_AllNum = new int[,]{
-        { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, },
-        { 16,17,18,19,20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,},
-        { 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 , 41, 42, 43, 44, 45,},
-        { 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60  },
+        { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
+        { 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 },
+        { 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45 },
+        { 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60 },
         { 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75 }
         };
 
@@ -39,8 +40,9 @@ public class BingoField : MonoBehaviour
             m_container.constraint = GridLayoutGroup.Constraint.FixedRowCount;
             m_container.constraintCount = m_col;
         }
+
         m_bingoCell = new BingoCell[m_row, m_col];
-        //ステージを生成
+        //ビンゴカードを生成
         for (int col = 0; col < m_col; col++)
         {
             for (int row = 0; row < m_row; row++)
@@ -53,7 +55,7 @@ public class BingoField : MonoBehaviour
             }
         }
 
-        //番号を付与
+        //ビンゴカードに番号を付与
         for (int row = 0; row < m_row; row++)
         {
             int[] nums = new int[5];//抽選結果を仮に入れておく配列
@@ -97,6 +99,59 @@ public class BingoField : MonoBehaviour
             {
                 m_bingoCell[row, col].GetMyNum(nums[col]);
             }
+        }
+
+        if (m_boardCol < m_boardRow)
+        {
+            m_board.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            m_board.constraintCount = m_boardRow;
+        }
+        else
+        {
+            m_board.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            m_board.constraintCount = m_boardCol;
+        }
+
+        m_bingoBoardNums = new BingoBoardNum[m_boardRow, m_boardCol];
+        //番号板を生成
+        for (int col = 0; col < m_boardCol; col++)
+        {
+            for (int row = 0; row < m_boardRow; row++)
+            {
+                var cell = Instantiate(m_BoardCellPrefab);
+                var parent = m_board.transform;
+                cell.transform.SetParent(parent);
+                m_bingoBoardNums[row, col] = cell;
+                cell.GetNumder(row + 1 + col * 15);
+            }
+        }
+    }
+
+    public void Lottery()
+    {
+        m_turn++;
+        int col = Random.Range(0, 5);
+        int row = Random.Range(0, 15);
+        int lottery = m_AllNum[col, row];
+        if (col == 0)
+        {
+            m_result.text = m_turn + "回目：Bの" + lottery + "が出た";
+        }
+        else if (col == 1)
+        {
+            m_result.text = m_turn + "回目：Iの" + lottery + "が出た";
+        }
+        else if (col == 2)
+        {
+            m_result.text = m_turn + "回目：Nの" + lottery + "が出た";
+        }
+        else if (col == 3)
+        {
+            m_result.text = m_turn + "回目：Gの" + lottery + "が出た";
+        }
+        else
+        {
+            m_result.text = m_turn + "回目：Oの" + lottery + "が出た";
         }
     }
 
