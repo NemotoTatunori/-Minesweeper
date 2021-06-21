@@ -79,7 +79,7 @@ public class BingoField : MonoBehaviour
                 if (Substitution == true)//抽選した数字が出ていなかったら抽選結果に加える
                 {
                     nums[col] = num;
-                }                
+                }
             }
             //抽選が終わったらソートする
             for (int f = 1; f < nums.Length; f++)//インサートソート
@@ -123,35 +123,51 @@ public class BingoField : MonoBehaviour
                 cell.transform.SetParent(parent);
                 m_bingoBoardNums[row, col] = cell;
                 cell.GetNumder(row + 1 + col * 15);
+                if (col == 0)
+                {
+                    cell.GetColumn("B");
+                }
+                else if (col == 1)
+                {
+                    cell.GetColumn("I");
+                }
+                else if (col == 2)
+                {
+                    cell.GetColumn("N");
+                }
+                else if (col == 3)
+                {
+                    cell.GetColumn("G");
+                }
+                else
+                {
+                    cell.GetColumn("O");
+                }
             }
         }
     }
 
     public void Lottery()
     {
-        m_turn++;
-        int col = Random.Range(0, 5);
-        int row = Random.Range(0, 15);
-        int lottery = m_AllNum[col, row];
-        if (col == 0)
+        if (m_turn < m_bingoBoardNums.Length)
         {
-            m_result.text = m_turn + "回目：Bの" + lottery + "が出た";
-        }
-        else if (col == 1)
-        {
-            m_result.text = m_turn + "回目：Iの" + lottery + "が出た";
-        }
-        else if (col == 2)
-        {
-            m_result.text = m_turn + "回目：Nの" + lottery + "が出た";
-        }
-        else if (col == 3)
-        {
-            m_result.text = m_turn + "回目：Gの" + lottery + "が出た";
+            while (true)
+            {
+                //ランダムに値を抽出する
+                int col = Random.Range(0, m_boardCol);
+                int row = Random.Range(0, m_boardRow);
+                if (m_bingoBoardNums[row, col].State == State.Close)
+                {
+                    m_turn++;
+                    m_bingoBoardNums[row, col].State = State.Open;
+                    m_result.text = m_turn + "回目：" + m_bingoBoardNums[row, col].m_myColumn + "の" + m_bingoBoardNums[row, col].m_myNumber + "が出た";
+                    break;
+                }
+            }
         }
         else
         {
-            m_result.text = m_turn + "回目：Oの" + lottery + "が出た";
+            Debug.Log("もうない");
         }
     }
 
