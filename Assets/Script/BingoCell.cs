@@ -52,6 +52,7 @@ public class BingoCell : MonoBehaviour
         if (m_row == 2 && m_col == 2)
         {
             m_num.text = "F";
+            m_myNum = 0;
             m_state = State.Open;
             OnSteteChanged();
         }

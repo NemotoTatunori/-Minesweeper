@@ -139,7 +139,11 @@ public class BingoField : MonoBehaviour
     }
 
     int[] colNum = { 0, 1, 2, 3, 4 };
-    int emptyCol = 0;//State.Close数が０になった列番号の数
+    int emptyCol = 0;//State.Close数が０になった列の数
+
+    /// <summary>
+    /// 数字を抽選する
+    /// </summary>
     public void Lottery()
     {
         if (m_turn < m_bingoBoardNums.Length)
@@ -175,7 +179,8 @@ public class BingoField : MonoBehaviour
             int rowN = rowNum[row];
             m_turn++;
             m_bingoBoardNums[rowN, colNum[col]].State = State.Open;
-            m_result.text = m_turn + "回目：" + m_bingoBoardNums[rowN, colNum[col]].m_myColumn + "の" + m_bingoBoardNums[rowN, col].m_myNumber + "が出た";
+            m_result.text = m_turn + "回目：" + m_bingoBoardNums[rowN, colNum[col]].m_myColumn + "の" + m_bingoBoardNums[rowN, colNum[col]].m_myNumber + "が出た";
+            NumberSearch(colNum[col], m_bingoBoardNums[rowN, colNum[col]].m_myNumber);
 
             if (remainingRow >= rowNum.Length - 1)//State.Close数が０だったらその行を抽出できないようにする
             {
@@ -188,6 +193,23 @@ public class BingoField : MonoBehaviour
         else
         {
             Debug.Log("もうない");
+        }
+    }
+
+    /// <summary>
+    /// 抽選番号がビンゴカードにあるか調べる
+    /// </summary>
+    /// <param name="row">行番号</param>
+    /// <param name="number">抽選番号</param>
+    void NumberSearch(int row, int number)
+    {
+        for (int col = 0; col < m_col; col++)
+        {
+            if (m_bingoCell[row,col].m_myNum == number)
+            {
+                m_bingoCell[row, col].State = State.Open;
+            }
+            
         }
     }
 
