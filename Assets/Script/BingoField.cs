@@ -15,6 +15,7 @@ public class BingoField : MonoBehaviour
     [SerializeField] int m_boardRow = 15;//横の長さ
     [SerializeField] int m_boardCol = 5;//縦の長さ
     [SerializeField] Text m_result = null;
+    [SerializeField] GameObject m_resultPanel = null;
     BingoCell[,] m_bingoCell;//セルの配列
     BingoBoardNum[,] m_bingoBoardNums;//番号板の配列
     private int m_turn = 0;
@@ -205,12 +206,66 @@ public class BingoField : MonoBehaviour
     {
         for (int col = 0; col < m_col; col++)
         {
-            if (m_bingoCell[row,col].m_myNum == number)
+            if (m_bingoCell[row, col].m_myNum == number)
             {
                 m_bingoCell[row, col].State = State.Open;
+                BingoSearch(row, col);
             }
-            
+
         }
+    }
+    /// <summary>
+    /// ビンゴになったかを調べる
+    /// </summary>
+    /// <param name="row">横座標</param>
+    /// <param name="col">縦座標</param>
+    void BingoSearch(int row, int col)
+    {
+        int openRow = 0;//横の空いている個数を保存しておく
+        int openCol = 0;//縦の空いている個数を保存しておく
+        int openDiagonalLeft = 0;//左上から斜めの空いている個数を保存しておく
+        int openDiagonalRight = 0;//右上から斜めの空いている個数を保存しておく
+        for (int searchRow = 0; searchRow < m_row; searchRow++)//横の空いている個数を数える
+        {
+            if (m_bingoCell[row, searchRow].State == State.Open)
+            {
+                openRow++;
+            }
+        }
+        for (int searchCol = 0; searchCol < m_col; searchCol++)//縦の空いている個数を数える
+        {
+            if (m_bingoCell[searchCol, col].State == State.Open)
+            {
+                openCol++;
+            }
+        }
+        if (row == col || row + col == 4)
+        {
+            for (int search = 0; search < m_col; search++)
+            {
+                if (m_bingoCell[search, search].State == State.Open)//左上から斜めの空いている個数を数える
+                {
+                    openDiagonalLeft++;
+                }
+            }
+            for (int search = 0; search < m_col; search++)
+            {
+                if (m_bingoCell[4 - search, search].State == State.Open)//右上から斜めの空いている個数を数える
+                {
+                    openDiagonalRight++;
+                }
+            }
+        }
+
+        if (openRow == 5 || openCol == 5 || openDiagonalLeft == 5 || openDiagonalRight == 5)
+        {
+            Bingo();
+        }
+    }
+
+    void Bingo()
+    {
+        m_resultPanel.SetActive(true);
     }
 
     public void Restart()
