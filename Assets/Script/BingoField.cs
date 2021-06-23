@@ -15,21 +15,12 @@ public class BingoField : MonoBehaviour
     [SerializeField] int m_boardRow = 15;//横の長さ
     [SerializeField] int m_boardCol = 5;//縦の長さ
     [SerializeField] Text m_result = null;
-    int[,] m_AllNum;//全数字の配列
     BingoCell[,] m_bingoCell;//セルの配列
     BingoBoardNum[,] m_bingoBoardNums;//番号板の配列
-    int m_turn = 0;
+    private int m_turn = 0;
 
     void Start()
     {
-        m_AllNum = new int[,]{
-        { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
-        { 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 },
-        { 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45 },
-        { 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60 },
-        { 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75 }
-        };
-
         if (m_col < m_row)
         {
             m_container.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
@@ -147,22 +138,51 @@ public class BingoField : MonoBehaviour
         }
     }
 
+    int[] colNum = { 0, 1, 2, 3, 4 };
+    int emptyCol = 0;//State.Close数が０になった列番号の数
     public void Lottery()
     {
         if (m_turn < m_bingoBoardNums.Length)
         {
-            while (true)
+            int col = Random.Range(0, colNum.Length - emptyCol);//ランダムに列番号を抽出する
+            int[] rowNum = new int[15];//State.Closeの数字を保存しておく
+            int remainingRow = rowNum.Length;//State.Close数を保存しておく
+
+            for (int rows = 0; rows < rowNum.Length; rows++)//その行のState.Closeを数える
             {
-                //ランダムに値を抽出する
-                int col = Random.Range(0, m_boardCol);
-                int row = Random.Range(0, m_boardRow);
-                if (m_bingoBoardNums[row, col].State == State.Close)
+                if (m_bingoBoardNums[rows, colNum[col]].State == State.Close)
                 {
-                    m_turn++;
-                    m_bingoBoardNums[row, col].State = State.Open;
-                    m_result.text = m_turn + "回目：" + m_bingoBoardNums[row, col].m_myColumn + "の" + m_bingoBoardNums[row, col].m_myNumber + "が出た";
-                    break;
+                    rowNum[rowNum.Length - 1 - rows] = rows;
+                    remainingRow--;
                 }
+            }
+
+            //State.Closeの数字を保存し終わったらソートする
+            for (int f = 1; f < rowNum.Length; f++)//インサートソート
+            {
+                for (int s = f; s > 0; s--)
+                {
+                    if (rowNum[s - 1] < rowNum[s])
+                    {
+                        int seve = rowNum[s - 1];
+                        rowNum[s - 1] = rowNum[s];
+                        rowNum[s] = seve;
+                    }
+                }
+            }
+
+            int row = Random.Range(0, m_boardRow - remainingRow);//ランダムに行番号を抽出する
+            int rowN = rowNum[row];
+            m_turn++;
+            m_bingoBoardNums[rowN, colNum[col]].State = State.Open;
+            m_result.text = m_turn + "回目：" + m_bingoBoardNums[rowN, colNum[col]].m_myColumn + "の" + m_bingoBoardNums[rowN, col].m_myNumber + "が出た";
+
+            if (remainingRow >= rowNum.Length - 1)//State.Close数が０だったらその行を抽出できないようにする
+            {
+                int seve = colNum[col];
+                colNum[col] = colNum[m_boardCol - 1 - emptyCol];
+                colNum[m_boardCol - 1 - emptyCol] = seve;
+                emptyCol++;
             }
         }
         else
