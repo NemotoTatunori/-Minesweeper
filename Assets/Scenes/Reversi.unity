@@ -823,6 +823,7 @@ MonoBehaviour:
   m_order: {fileID: 1816050882}
   m_lizard: {fileID: 892273408}
   m_lizardJudgment: {fileID: 661266181}
+  m_GameRecord: f4d3c3
 --- !u!1 &1044972389
 GameObject:
   m_ObjectHideFlags: 0

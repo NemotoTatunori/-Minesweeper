@@ -18,6 +18,7 @@ public class ReversiField : MonoBehaviour
     [SerializeField] GameObject m_lizard = null;
     [SerializeField] Text m_lizardJudgment = null;
     bool m_cheat = true;
+    [SerializeField] string m_GameRecord = "";
 
     void Start()
     {
@@ -362,9 +363,65 @@ public class ReversiField : MonoBehaviour
                 StartCoroutine("BlackCheat");
                 m_cheat = false;
             }
+            if (Input.GetKey("g") && Input.GetMouseButtonDown(1))
+            {
+                StartCoroutine("GameRecordCheat");
+                m_cheat = false;
+            }
         }
     }
-
+    /// <summary>
+    /// 棋譜の実行
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator GameRecordCheat()
+    {
+        int[] conversion = new int[m_GameRecord.Length];
+        for (int i = 0; i < m_GameRecord.Length; i++)
+        {
+            if (m_GameRecord[i] == '1' || m_GameRecord[i] == 'a')
+            {
+                conversion[i] = 0;
+            }
+            else if(m_GameRecord[i] == '2' || m_GameRecord[i] == 'b')
+            {
+                conversion[i] = 1;
+            }
+            else if (m_GameRecord[i] == '3' || m_GameRecord[i] == 'c')
+            {
+                conversion[i] = 2;
+            }
+            else if (m_GameRecord[i] == '4' || m_GameRecord[i] == 'd')
+            {
+                conversion[i] = 3;
+            }
+            else if (m_GameRecord[i] == '5' || m_GameRecord[i] == 'e')
+            {
+                conversion[i] = 4;
+            }
+            else if (m_GameRecord[i] == '6' || m_GameRecord[i] == 'f')
+            {
+                conversion[i] = 5;
+            }
+            else if (m_GameRecord[i] == '7' || m_GameRecord[i] == 'g')
+            {
+                conversion[i] = 6;
+            }
+            else if (m_GameRecord[i] == '8' || m_GameRecord[i] == 'h')
+            {
+                conversion[i] = 7;
+            }
+        }
+        for (int i = 1; i < conversion.Length; i += 2)
+        {
+            PieceChangeAll(conversion[i - 1], conversion[i]);
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+    /// <summary>
+    /// 黒勝利の最短終了
+    /// </summary>
+    /// <returns></returns>
     IEnumerator BlackCheat()
     {
         PieceChangeAll(5, 3);
@@ -385,7 +442,10 @@ public class ReversiField : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         PieceChangeAll(2, 4);
     }
-
+    /// <summary>
+    /// 白勝利の最短終了
+    /// </summary>
+    /// <returns></returns>
     IEnumerator WhiteCheat()
     {
         PieceChangeAll(5, 3);
