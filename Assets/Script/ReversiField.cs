@@ -339,7 +339,11 @@ public class ReversiField : MonoBehaviour
     void GameSet(int white, int black)
     {
         m_lizard.SetActive(true);
-        if (white > black)
+        if (white == black)
+        {
+            m_lizardJudgment.text = "引き分け！";
+        }
+        else if (white > black)
         {
             m_lizardJudgment.text = "白の勝ち！";
         }
@@ -379,37 +383,14 @@ public class ReversiField : MonoBehaviour
         int[] conversion = new int[m_GameRecord.Length];
         for (int i = 0; i < m_GameRecord.Length; i++)
         {
-            if (m_GameRecord[i] == '1' || m_GameRecord[i] == 'a')
+            char num = m_GameRecord[i];
+            if (num >= '1' && num <= '8')
             {
-                conversion[i] = 0;
+                conversion[i] = num - '1';
             }
-            else if(m_GameRecord[i] == '2' || m_GameRecord[i] == 'b')
+            else if(num >= 'a' && num <= 'h')
             {
-                conversion[i] = 1;
-            }
-            else if (m_GameRecord[i] == '3' || m_GameRecord[i] == 'c')
-            {
-                conversion[i] = 2;
-            }
-            else if (m_GameRecord[i] == '4' || m_GameRecord[i] == 'd')
-            {
-                conversion[i] = 3;
-            }
-            else if (m_GameRecord[i] == '5' || m_GameRecord[i] == 'e')
-            {
-                conversion[i] = 4;
-            }
-            else if (m_GameRecord[i] == '6' || m_GameRecord[i] == 'f')
-            {
-                conversion[i] = 5;
-            }
-            else if (m_GameRecord[i] == '7' || m_GameRecord[i] == 'g')
-            {
-                conversion[i] = 6;
-            }
-            else if (m_GameRecord[i] == '8' || m_GameRecord[i] == 'h')
-            {
-                conversion[i] = 7;
+                conversion[i] = num - 'a';
             }
         }
         for (int i = 1; i < conversion.Length; i += 2)
